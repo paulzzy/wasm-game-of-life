@@ -48,7 +48,10 @@ impl Universe {
         }
         count
     }
-    
+}
+
+#[wasm_bindgen]
+impl Universe {
     pub fn tick(&mut self) {
         let mut updated_universe = self.cells.clone();
 
