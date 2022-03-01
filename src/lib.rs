@@ -48,10 +48,7 @@ impl Universe {
         }
         count
     }
-}
-
-#[wasm_bindgen]
-impl Universe {
+    
     pub fn tick(&mut self) {
         let mut updated_universe = self.cells.clone();
 
@@ -83,5 +80,52 @@ impl Universe {
         }
 
         self.cells = updated_universe;
+    }
+
+    pub fn new() -> Universe {
+        let width = 64;
+        let height = 64;
+
+        let cells = (0..width * height)
+            .map(|i| {
+                if i % 2 == 0 || i % 7 == 0 {
+                    Cell::Alive
+                } else {
+                    Cell::Dead
+                }
+            })
+            .collect();
+
+        Universe {
+            width,
+            height,
+            cells,
+        }
+    }
+
+    pub fn render(&self) -> String {
+        self.to_string()
+    }
+}
+
+impl Default for Universe {
+    fn default() -> Self {
+        Universe::new()
+    }
+}
+
+use std::fmt;
+
+impl fmt::Display for Universe {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        for line in self.cells.as_slice().chunks(self.width as usize) {
+            for &cell in line {
+                let symbol = if cell == Cell::Dead { '◻' } else { '◼' };
+                write!(f, "{}", symbol)?;
+            }
+            writeln!(f)?;
+        }
+
+        Ok(())
     }
 }
